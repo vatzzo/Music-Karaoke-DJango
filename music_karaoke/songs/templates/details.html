@@ -27,7 +27,14 @@
       <audio class="inst-audio" controls>
         <source src="{{MEDIA_URL}}{{song.audio_file}}" type="audio/mpeg">
       </audio>
+
+      <a class="btn bg-primary" href="{% url 'songs:add_to_favourite' %}">
+        Add to favourite
+      </a>
     </div>
+
+    
+
   </div>
 </section>
 
