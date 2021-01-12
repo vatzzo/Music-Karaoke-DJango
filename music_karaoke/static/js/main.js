@@ -28,6 +28,22 @@ function addNewRecord(box, src) {
     box.insertAdjacentHTML('beforeend',newRecord)
 }
 
+function getAudioTrackVocalUrl() {
+    return localStorage.getItem('audioFileVocal');
+}
+
+function sendBlob(blob, url) {
+    let fd = new FormData();
+    fd.append("audio_file_vocal", getAudioTrackVocalUrl());
+    fd.append("audio_file", blob);
+    fetch(url, {
+        method: 'post',
+        body: fd
+    })
+    .then(data => data.json())
+    .then(score => console.log(score));
+}
+
 let chunks = [];
 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -45,12 +61,15 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             }
 
             mediaRecorder.onstop = function(e) {
-                const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+                let blob = new Blob(chunks, { type: 'audio/wav' });
                 chunks = [];
                 console.log(blob.size)
+                console.log(blob)
                 const audioURL = window.URL.createObjectURL(blob);
+
                 elements.clips.innerHTML = "";
                 addNewRecord(elements.clips, audioURL)
+                sendBlob(blob, "http://127.0.0.1:8000/analysis")
             }
 
             elements.btn.onclick = function() {
